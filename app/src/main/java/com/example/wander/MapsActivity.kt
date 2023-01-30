@@ -1,28 +1,25 @@
 package com.example.wander
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.example.wander.databinding.ActivityMapsBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import com.example.wander.databinding.ActivityMapsBinding
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.GroundOverlay
-import com.google.android.gms.maps.model.GroundOverlayOptions
-import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.*
 import java.util.*
-import kotlin.math.ln
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var map: GoogleMap
     private lateinit var binding: ActivityMapsBinding
+    private val REQUEST_LOCATION_PERMISSION = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +61,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         setMarkLongClick(map)
         setPoiClick(map)
         setMapStyle(map)
+        enableMyLocation()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -120,5 +118,37 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun setMapStyle(map: GoogleMap) {
         map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
+    }
+
+    private fun isPermissionGranted(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+        ) === PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun enableMyLocation() {
+        if (isPermissionGranted()) {
+            map.uiSettings.isMyLocationButtonEnabled = true
+        } else {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf<String>(android.Manifest.permission_group.LOCATION),
+                REQUEST_LOCATION_PERMISSION
+            )
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_LOCATION_PERMISSION) {
+            if (grantResults.isNotEmpty() && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                enableMyLocation()
+            }
+        }
     }
 }
