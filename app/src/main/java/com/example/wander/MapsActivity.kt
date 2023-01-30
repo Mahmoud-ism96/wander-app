@@ -12,6 +12,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.example.wander.databinding.ActivityMapsBinding
+import com.google.android.gms.maps.model.MapStyleOptions
 import java.util.*
 import kotlin.math.ln
 
@@ -53,6 +54,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         setMarkLongClick(map)
         setPoiClick(map)
+        setMapStyle(map)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -62,7 +64,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        // Change the map type based on the user's selection.
         R.id.normal_map -> {
             map.mapType = GoogleMap.MAP_TYPE_NORMAL
             true
@@ -101,5 +102,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             )
             poiMarker?.showInfoWindow()
         }
+    }
+
+    private fun setMapStyle(map: GoogleMap) {
+        map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
     }
 }
