@@ -13,6 +13,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.example.wander.databinding.ActivityMapsBinding
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.GroundOverlay
+import com.google.android.gms.maps.model.GroundOverlayOptions
 import com.google.android.gms.maps.model.MapStyleOptions
 import java.util.*
 import kotlin.math.ln
@@ -47,12 +49,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val lat = 30.017492996141605
         val lng = 31.434348529679674
-        val zoomLevel = 16f
+        val zoomLevel = 16.5f
+        val overlaySize = 150f
 
         val hospital = LatLng(lat, lng)
         map.addMarker(MarkerOptions().position(hospital).title("Marker in New Cairo"))
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(hospital, zoomLevel))
 
+        val hospitalOverlay =
+            GroundOverlayOptions().image(BitmapDescriptorFactory.fromResource(R.drawable.amb))
+                .position(hospital, overlaySize)
+
+        map.addGroundOverlay(hospitalOverlay)
         setMarkLongClick(map)
         setPoiClick(map)
         setMapStyle(map)
@@ -100,10 +108,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun setPoiClick(map: GoogleMap) {
         map.setOnPoiClickListener { poi ->
             val poiMarker = map.addMarker(
-                MarkerOptions().position(poi.latLng)
-                    .title(poi.name).icon(BitmapDescriptorFactory.defaultMarker(
-                    BitmapDescriptorFactory.HUE_AZURE
-                ))
+                MarkerOptions().position(poi.latLng).title(poi.name).icon(
+                    BitmapDescriptorFactory.defaultMarker(
+                        BitmapDescriptorFactory.HUE_AZURE
+                    )
+                )
             )
             poiMarker?.showInfoWindow()
         }
