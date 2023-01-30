@@ -12,6 +12,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.example.wander.databinding.ActivityMapsBinding
+import java.util.*
 import kotlin.math.ln
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -26,8 +27,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         setContentView(binding.root)
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
     }
 
@@ -50,6 +50,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val hospital = LatLng(lat, lng)
         map.addMarker(MarkerOptions().position(hospital).title("Marker in New Cairo"))
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(hospital, zoomLevel))
+
+        setMarkLongClick(map)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -77,5 +79,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             true
         }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    private fun setMarkLongClick(map: GoogleMap) {
+        map.setOnMapLongClickListener { latLng ->
+            val snippet = String.format(
+                Locale.getDefault(), "Lat: %1$.5f, Long: %2$.5f", latLng.latitude, latLng.longitude
+            )
+            map.addMarker(
+                MarkerOptions().position(latLng).title(getString(R.string.dropped_pin))
+                    .snippet(snippet)
+            )
+        }
     }
 }
