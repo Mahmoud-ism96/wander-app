@@ -52,6 +52,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(hospital, zoomLevel))
 
         setMarkLongClick(map)
+        setPoiClick(map)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -90,6 +91,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 MarkerOptions().position(latLng).title(getString(R.string.dropped_pin))
                     .snippet(snippet)
             )
+        }
+    }
+
+    private fun setPoiClick(map: GoogleMap) {
+        map.setOnPoiClickListener { poi ->
+            val poiMarker = map.addMarker(
+                MarkerOptions().position(poi.latLng).title(poi.name)
+            )
+            poiMarker?.showInfoWindow()
         }
     }
 }
