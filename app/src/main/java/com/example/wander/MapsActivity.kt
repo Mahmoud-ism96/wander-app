@@ -12,6 +12,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.example.wander.databinding.ActivityMapsBinding
+import kotlin.math.ln
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -42,10 +43,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
 
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        map.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        map.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        val lat = 30.017492996141605
+        val lng = 31.434348529679674
+        val zoomLevel = 16f
+
+        val hospital = LatLng(lat, lng)
+        map.addMarker(MarkerOptions().position(hospital).title("Marker in New Cairo"))
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(hospital, zoomLevel))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
